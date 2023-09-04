@@ -164,11 +164,55 @@ aside li {
   cursor: pointer;
 }
 
+.header-menu-desktop .menuItem:hover>a:before {
+  right: auto;
+  left: 0;
+  width: 100%;
+}
+
+.header-menu-desktop .menuItem>a:before {
+  right: 0;
+}
+
+.header-menu-desktop .menuItem > .active:before {
+  right: auto;
+  left: 0;
+  width: 100%;
+}
+
+.header-menu-desktop .menuItem>a:before {
+  content: "";
+  height: 3px;
+  transition: all .3s ease-in-out 0s;
+}
+.header-menu-desktop .menuItem>a:before {
+  position: absolute;
+  bottom: -1.75rem;
+  width: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgb(33 33 33/var(--tw-bg-opacity));
+}
+
 .header-ctas {
   align-items: center;
   display: flex;
-  grid-gap: 1rem;
+  grid-gap: 2rem;
   margin-left: auto;
+}
+
+.header-menu-item {
+  text-decoration: none !important;
+  border-bottom: 0px solid;
+}
+
+.cart-counter-badge {
+  min-width: 20px;
+  min-height: 20px;
+  padding: 2px;
+  border-radius: 20px;
+  font-size: 10px;
+  background-color: #000;
+  right: -10px;
 }
 
 /*
@@ -470,4 +514,39 @@ aside li {
 
 .account-logout {
   display: inline-block;
+}
+
+
+/*   Carousel */
+/* global.css or ParallaxCarousel.css */
+.parallax-item {
+  position: relative;
+  height: 100vh;
+}
+
+.parallax-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+.parallax-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+}
+
+
+.slick-slide img {
+  margin: auto;
+  width: 50%;
+  height: 50%;
 }
