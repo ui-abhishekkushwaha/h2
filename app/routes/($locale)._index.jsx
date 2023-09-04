@@ -3,8 +3,8 @@ import { Await, useLoaderData, Link } from '@remix-run/react';
 import { Suspense, Component } from 'react';
 import { Image, Money } from '@shopify/hydrogen';
 import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+// import 'slick-carousel/slick/slick.css';
+// import 'slick-carousel/slick/slick-theme.css';
 
 export const meta = () => {
   return [{ title: 'Hydrogen | Home' }];

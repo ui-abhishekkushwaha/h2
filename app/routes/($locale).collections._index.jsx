@@ -1,27 +1,27 @@
-import {useLoaderData, Link} from '@remix-run/react';
-import {json} from '@shopify/remix-oxygen';
-import {Pagination, getPaginationVariables, Image} from '@shopify/hydrogen';
+import { useLoaderData, Link } from '@remix-run/react';
+import { json } from '@shopify/remix-oxygen';
+import { Pagination, getPaginationVariables, Image } from '@shopify/hydrogen';
 
-export async function loader({context, request}) {
+export async function loader({ context, request }) {
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 4,
   });
 
-  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {
+  const { collections } = await context.storefront.query(COLLECTIONS_QUERY, {
     variables: paginationVariables,
   });
 
-  return json({collections});
+  return json({ collections });
 }
 
 export default function Collections() {
-  const {collections} = useLoaderData();
+  const { collections } = useLoaderData();
 
   return (
     <div className="collections">
       <h1>Collections</h1>
       <Pagination connection={collections}>
-        {({nodes, isLoading, PreviousLink, NextLink}) => (
+        {({ nodes, isLoading, PreviousLink, NextLink }) => (
           <div>
             <PreviousLink>
               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
@@ -37,7 +37,7 @@ export default function Collections() {
   );
 }
 
-function CollectionsGrid({collections}) {
+function CollectionsGrid({ collections }) {
   return (
     <div className="collections-grid">
       {collections.map((collection, index) => (
@@ -51,7 +51,7 @@ function CollectionsGrid({collections}) {
   );
 }
 
-function CollectionItem({collection, index}) {
+function CollectionItem({ collection, index }) {
   return (
     <Link
       className="collection-item"

@@ -1,5 +1,7 @@
 import { json, redirect } from '@shopify/remix-oxygen';
 import { useLoaderData, Link } from '@remix-run/react';
+import { Filter } from '~/components/Filter';
+
 import {
   Pagination,
   getPaginationVariables,
@@ -12,12 +14,14 @@ export const meta = ({ data }) => {
   return [{ title: `Hydrogen | ${data.collection.title} Collection` }];
 };
 
-export async function loader({ request, params, context }) {
+export async function loader({ request, params, context, filters }) {
   const { handle } = params;
   const { storefront } = context;
   const paginationVariables = getPaginationVariables(request, {
     pageBy: 8,
   });
+
+  console.log(filters);
 
   if (!handle) {
     return redirect('/collections');
@@ -29,16 +33,28 @@ export async function loader({ request, params, context }) {
 
   if (!collection) {
     throw new Response(`Collection ${handle} not found`, {
-      status: 404,
+      status: 404, useLoaderData
     });
   }
-  return json({ collection });
+
+  const { collection: collection_filters } = await storefront.query(FILTER_QUERY2, {
+    variables: { handle },
+  });
+  return json({ collection, collection_filters });
 }
 
+
+
 export default function Collection() {
-  const { collection } = useLoaderData();
+
+  const getFilters = (checkbox, value) => {
+    loader({ request, params, response, filters: value });
+  }
+
+  const { collection, collection_filters } = useLoaderData();
   return (
     <div className="collection">
+      <Filter filters={collection_filters} getFilters={getFilters} />
       <div className={`relative h-screen w-full mb-10  ${!collection.image ? 'bg-gray-300' : ''}`} style={{ maxHeight: '300px' }} >
         {collection.image && <img src={collection.image.src} alt={collection.title} />}
         <div class="absolute inset-0 mt-8 flex w-full flex-col items-center justify-center p-5 text-center md:px-20 lg:space-y-10">
@@ -147,6 +163,8 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    vendor
+    productType
     featuredImage {
       id
       altText
@@ -184,6 +202,7 @@ const COLLECTION_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $filters: [ProductFilter!]
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -198,7 +217,8 @@ const COLLECTION_QUERY = `#graphql
         first: $first,
         last: $last,
         before: $startCursor,
-        after: $endCursor
+        after: $endCursor,
+        filters: $filters
       ) {
         nodes {
           ...ProductItem
@@ -213,3 +233,29 @@ const COLLECTION_QUERY = `#graphql
     }
   }
 `;
+
+//Filter Query
+
+const FILTER_QUERY2 = `#graphql 
+query Facets(
+  $handle: String!
+  $country: CountryCode
+  $language: LanguageCode
+) @inContext(country: $country, language: $language) {
+  collection(handle: $handle) {
+    handle
+    products(first: 10) {
+      filters {
+        id
+        label
+        type
+        values {
+          id
+          label
+          count
+          input
+        }
+      }
+    }
+  }
+}`
